@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel Igreja</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Painel Igreja Mobile</title>
 
 <style>
 body{
@@ -16,8 +16,9 @@ font-family:Arial, sans-serif;
 color:white;
 text-align:center;
 overflow:hidden;
+touch-action:manipulation;
 
-/* 🎬 FUNDO ANIMADO */
+/* FUNDO ANIMADO */
 background-image:url("./fundo.jpg");
 background-size:120%;
 background-position:center;
@@ -25,19 +26,13 @@ background-repeat:no-repeat;
 animation: zoomMove 25s infinite alternate ease-in-out;
 }
 
-/* ANIMAÇÃO */
+/* ANIMAÇÃO FUNDO */
 @keyframes zoomMove{
-0%{
-transform:scale(1);
-background-position:0% 50%;
-}
-100%{
-transform:scale(1.1);
-background-position:100% 50%;
-}
+0%{transform:scale(1); background-position:0% 50%;}
+100%{transform:scale(1.1); background-position:100% 50%;}
 }
 
-/* ESCURECER FUNDO */
+/* OVERLAY */
 #overlay{
 position:fixed;
 top:0;
@@ -48,61 +43,57 @@ background:rgba(0,0,0,0.6);
 z-index:0;
 }
 
-/* CONTEÚDO */
+/* CONTAINER */
 #conteudo{
 position:relative;
 z-index:2;
 display:flex;
 flex-direction:column;
+justify-content:center;
 align-items:center;
-gap:15px;
-padding:20px;
+gap:10px;
+padding:15px;
+width:100%;
+max-width:400px;
 }
 
 /* TEXTOS */
 #titulo{
-font-size:60px;
-text-shadow:2px 2px 10px rgba(0,0,0,0.8);
+font-size:28px;
+font-weight:bold;
+text-shadow:2px 2px 8px rgba(0,0,0,0.8);
 }
 
 #igreja{
-font-size:26px;
+font-size:16px;
 opacity:0.9;
 }
 
 #relogio{
-font-size:80px;
+font-size:48px;
+font-weight:bold;
 animation:pulse 1s infinite alternate;
-text-shadow:2px 2px 10px rgba(0,0,0,0.8);
 }
 
 #contador{
-font-size:50px;
-text-shadow:2px 2px 10px rgba(0,0,0,0.8);
+font-size:26px;
 }
 
 #aviso{
-font-size:18px;
+font-size:14px;
 opacity:0.8;
-margin-top:10px;
+margin-top:5px;
 }
 
 /* VOLUME */
 #volume{
-width:200px;
+width:100%;
 }
 
 /* ANIMAÇÃO RELÓGIO */
 @keyframes pulse{
 from{transform:scale(1);}
 to{transform:scale(1.05);}
-}
-
-/* RESPONSIVO */
-@media (max-width:600px){
-#titulo{font-size:30px;}
-#relogio{font-size:50px;}
-#contador{font-size:30px;}
 }
 </style>
 </head>
@@ -111,7 +102,7 @@ to{transform:scale(1.05);}
 
 <div id="overlay"></div>
 
-<!-- 🎵 ÁUDIO -->
+<!-- ÁUDIO -->
 <audio id="audioFundo" loop preload="auto">
   <source src="Santo.mp3" type="audio/mpeg">
 </audio>
@@ -120,13 +111,13 @@ to{transform:scale(1.05);}
 
 <div id="titulo">Culto de Santa Ceia</div>
 
-<div id="igreja">Igreja Batista da Renovação Espiritual Juruti</div>
+<div id="igreja">IBRE Juruti</div>
 
 <div id="relogio">00:00:00</div>
 
 <div id="contador"></div>
 
-<div id="aviso">Clique na tela para iniciar o som</div>
+<div id="aviso">Toque na tela para iniciar</div>
 
 <input id="volume" type="range" min="0" max="1" step="0.01" value="0.3">
 
@@ -137,43 +128,29 @@ const audio = document.getElementById("audioFundo");
 const volume = document.getElementById("volume");
 let iniciou = false;
 
-/* TELA CHEIA */
-function telaCheia(){
-const el = document.documentElement;
-
-if (el.requestFullscreen) el.requestFullscreen();
-else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-else if (el.msRequestFullscreen) el.msRequestFullscreen();
-}
-
-/* ÁUDIO COM FADE */
+/* INICIAR ÁUDIO */
 function iniciarAudio(){
 audio.volume = 0;
 
 audio.play().then(() => {
-
 let v = 0;
 let alvo = volume.value;
 
 let fade = setInterval(function(){
 if(v < alvo){
-v += 0.005;
+v += 0.01;
 audio.volume = Math.min(v, alvo);
 }else{
 clearInterval(fade);
 }
 },50);
-
-}).catch(() => {
-console.log("Erro ao iniciar áudio");
-});
+}).catch(()=>{});
 }
 
-/* CLIQUE */
+/* TOQUE NA TELA */
 document.addEventListener("click", function(){
 if(!iniciou){
 iniciou = true;
-telaCheia();
 iniciarAudio();
 document.getElementById("aviso").style.display = "none";
 }
