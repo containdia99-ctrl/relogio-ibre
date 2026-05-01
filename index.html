@@ -22,7 +22,6 @@ background-position:center;
 background-repeat:no-repeat;
 }
 
-/* ESCURECER FUNDO */
 #overlay{
 position:fixed;
 top:0;
@@ -33,7 +32,6 @@ background:rgba(0,0,0,0.6);
 z-index:0;
 }
 
-/* CONTEÚDO */
 #conteudo{
 position:relative;
 z-index:2;
@@ -44,7 +42,6 @@ gap:15px;
 padding:20px;
 }
 
-/* TEXTOS */
 #titulo{
 font-size:60px;
 text-shadow:2px 2px 10px rgba(0,0,0,0.8);
@@ -66,34 +63,21 @@ font-size:50px;
 text-shadow:2px 2px 10px rgba(0,0,0,0.8);
 }
 
-/* BOTÃO */
-#btn{
-padding:15px 25px;
+#aviso{
 font-size:18px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-background:white;
-color:black;
-transition:0.3s;
+opacity:0.8;
+margin-top:10px;
 }
 
-#btn:hover{
-transform:scale(1.05);
-}
-
-/* VOLUME */
 #volume{
 width:200px;
 }
 
-/* ANIMAÇÃO */
 @keyframes pulse{
 from{transform:scale(1);}
 to{transform:scale(1.05);}
 }
 
-/* RESPONSIVO */
 @media (max-width:600px){
 #titulo{font-size:30px;}
 #relogio{font-size:50px;}
@@ -106,7 +90,6 @@ to{transform:scale(1.05);}
 
 <div id="overlay"></div>
 
-<!-- ÁUDIO USANDO SEU MP4 -->
 <audio id="audioFundo" loop preload="auto">
   <source src="Santo.mp4" type="audio/mp4">
 </audio>
@@ -121,7 +104,7 @@ to{transform:scale(1.05);}
 
 <div id="contador"></div>
 
-<button id="btn">Iniciar Culto</button>
+<div id="aviso">Toque em qualquer lugar para iniciar o som</div>
 
 <input id="volume" type="range" min="0" max="1" step="0.01" value="0.3">
 
@@ -129,8 +112,8 @@ to{transform:scale(1.05);}
 
 <script>
 const audio = document.getElementById("audioFundo");
-const btn = document.getElementById("btn");
 const volume = document.getElementById("volume");
+let iniciado = false;
 
 /* FULLSCREEN */
 function telaCheia(){
@@ -139,33 +122,38 @@ document.documentElement.requestFullscreen();
 }
 }
 
-/* FADE IN SUAVE */
+/* FADE IN */
 function fadeIn(){
 audio.volume = 0;
 
-audio.play().catch(() => {
-console.log("Autoplay bloqueado pelo navegador");
+audio.play().then(() => {
+  let v = 0;
+  let alvo = volume.value;
+
+  let fade = setInterval(function(){
+    if(v < alvo){
+      v += 0.005;
+      audio.volume = Math.min(v, alvo);
+    }else{
+      clearInterval(fade);
+    }
+  },50);
+}).catch(() => {
+  console.log("Autoplay bloqueado");
 });
-
-let v = 0;
-let alvo = volume.value;
-
-let fade = setInterval(function(){
-if(v < alvo){
-v += 0.005;
-audio.volume = Math.min(v, alvo);
-}else{
-clearInterval(fade);
-}
-},50);
 }
 
-/* BOTÃO */
-btn.onclick = function(){
+/* INICIAR COM QUALQUER CLIQUE */
+function iniciar(){
+if(!iniciado){
+iniciado = true;
 telaCheia();
 fadeIn();
-btn.style.display = "none";
-};
+document.getElementById("aviso").style.display = "none";
+}
+}
+
+document.addEventListener("click", iniciar);
 
 /* VOLUME */
 volume.oninput = function(){
