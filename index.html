@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt br">
 <head>
-<meta charset="UTF 8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel Igreja</title>
 
@@ -21,7 +21,13 @@ text-align:center;
 
 #titulo{
 font-size:60px;
-margin-bottom:30px;
+margin-bottom:20px;
+}
+
+#igreja{
+font-size:28px;
+margin-bottom:40px;
+opacity:0.9;
 }
 
 #relogio{
@@ -29,25 +35,27 @@ font-size:90px;
 margin-bottom:40px;
 }
 
-#contador{
-font-size:70px;
+#sub{
+font-size:28px;
+opacity:0.8;
+margin-bottom:20px;
 }
 
-#sub{
-font-size:30px;
-margin-top:20px;
-opacity:0.8;
+#contador{
+font-size:70px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="titulo">Santa Ceia</div>
+<div id="titulo">Culto de Santa Ceia</div>
+
+<div id="igreja">Igreja Batista da Renovação Espiritual Juruti</div>
 
 <div id="relogio">00:00:00</div>
 
-<div id="sub">Contagem regressiva para o culto de domingo 19:30</div>
+<div id="sub">Contagem regressiva para domingo às 19:30</div>
 
 <div id="contador"></div>
 
@@ -79,7 +87,7 @@ const alvo = proximoCulto();
 
 function contagem(){
 const agora = new Date().getTime();
-const distancia = alvo.getTime() + (0 - agora);
+const distancia = alvo.getTime() - agora;
 
 if(distancia <= 0){
 document.getElementById("contador").innerText = "Já começou";
