@@ -13,57 +13,60 @@ display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-font-family:Arial;
-text-align:center;
-color:#fff;
 background-image:url("fundo.jpg");
 background-size:cover;
 background-position:center;
-background-repeat:no-repeat;
+color:white;
+font-family:Arial;
+text-align:center;
 }
 
 #overlay{
 position:absolute;
-top:0;
-left:0;
 width:100%;
 height:100%;
 background:rgba(0,0,0,0.6);
-z-index:0;
 }
 
 #conteudo{
 position:relative;
-z-index:1;
+z-index:2;
 display:flex;
 flex-direction:column;
 align-items:center;
+gap:20px;
 }
 
 #titulo{
 font-size:60px;
-margin-bottom:20px;
 }
 
 #igreja{
-font-size:28px;
-margin-bottom:40px;
+font-size:26px;
 opacity:0.9;
 }
 
 #relogio{
-font-size:90px;
-margin-bottom:40px;
-}
-
-#sub{
-font-size:28px;
-opacity:0.8;
-margin-bottom:20px;
+font-size:80px;
 }
 
 #contador{
-font-size:70px;
+font-size:60px;
+}
+
+#btnIniciar{
+padding:15px 30px;
+font-size:20px;
+cursor:pointer;
+border:none;
+border-radius:10px;
+background:#ffffff;
+color:#000;
+margin-top:20px;
+}
+
+#volume{
+width:200px;
 }
 </style>
 </head>
@@ -72,7 +75,7 @@ font-size:70px;
 
 <div id="overlay"></div>
 
-<audio id="audioFundo" autoplay loop>
+<audio id="audioFundo" loop>
 <source src="audio.mp3" type="audio/mpeg">
 </audio>
 
@@ -84,21 +87,50 @@ font-size:70px;
 
 <div id="relogio">00:00:00</div>
 
-<div id="sub">Contagem regressiva para domingo às 19:30</div>
-
 <div id="contador"></div>
+
+<button id="btnIniciar">Iniciar culto</button>
+
+<input id="volume" type="range" min="0" max="1" step="0.01" value="0.3">
 
 </div>
 
 <script>
 const audio = document.getElementById("audioFundo");
+const btn = document.getElementById("btnIniciar");
+const volume = document.getElementById("volume");
 
-function tocarAudio(){
-audio.volume = 0.3;
+function fadeInAudio(){
+audio.volume = 0;
 audio.play();
+
+let v = 0;
+const fade = setInterval(function(){
+if(v < volume.value){
+v = v + 0.01;
+audio.volume = v;
+}else{
+clearInterval(fade);
+}
+},50);
 }
 
-document.body.addEventListener("click", tocarAudio);
+function telaCheia(){
+const elem = document.documentElement;
+if(elem.requestFullscreen){
+elem.requestFullscreen();
+}
+}
+
+btn.onclick = function(){
+telaCheia();
+fadeInAudio();
+btn.style.display = "none";
+};
+
+volume.oninput = function(){
+audio.volume = volume.value;
+};
 
 function relogio(){
 const agora = new Date();
