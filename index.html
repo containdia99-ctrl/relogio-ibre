@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
+
 <title>Relógio</title>
 
 <style>
@@ -20,19 +25,10 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-
   background-image: url('fundo.jpg');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
-
-  animation: movimento 20s infinite alternate ease-in-out;
   z-index: -3;
-}
-
-@keyframes movimento {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.05); }
 }
 
 /* overlay */
@@ -44,14 +40,6 @@ body {
   z-index: -2;
 }
 
-/* partículas */
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-}
-
 /* centro */
 .centro {
   position: absolute;
@@ -61,62 +49,27 @@ canvas {
   text-align: center;
 }
 
-/* relógio */
 #relogio {
   font-size: clamp(40px, 12vw, 120px);
   color: #FFD700;
-  letter-spacing: 8px;
-  text-shadow:
-    0 0 10px #FFD700,
-    0 0 20px #FFA500,
-    0 0 40px #FF8C00;
 }
 
-/* data */
 #data {
-  margin-top: 15px;
+  margin-top: 10px;
   font-size: clamp(14px, 4vw, 30px);
   color: #FFD700;
 }
-
-/* botões */
-.botoes {
-  margin-top: 20px;
-}
-
-button {
-  margin: 5px;
-  padding: 10px 15px;
-  font-size: 14px;
-  background: #FFD700;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
 </style>
-
 </head>
+
 <body>
 
 <div class="fundo"></div>
 <div class="overlay"></div>
-<canvas id="particulas"></canvas>
-
-<!-- áudios calmos -->
-<audio id="chuva" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
-<audio id="ambiente" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
-<audio id="igreja" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"></audio>
 
 <div class="centro">
   <div id="relogio"></div>
   <div id="data"></div>
-
-  <div class="botoes">
-    <button onclick="tocar('chuva')">Chuva Suave</button>
-    <button onclick="tocar('ambiente')">Ambiente Calmo</button>
-    <button onclick="tocar('igreja')">Som Suave</button>
-    <button onclick="parar()">Parar</button>
-  </div>
 </div>
 
 <script>
@@ -130,85 +83,23 @@ function atualizarRelogio() {
   document.getElementById('relogio').textContent =
     h + ":" + m + ":" + s;
 
-  const dias = ["DOMINGO","SEGUNDA","TERÇA","QUARTA","QUINTA","SEXTA","SÁBADO"];
+  const dias = ["DOM","SEG","TER","QUA","QUI","SEX","SAB"];
   let diaSemana = dias[agora.getDay()];
 
   let dia = agora.getDate().toString().padStart(2, '0');
-  let mes = (agora.getMonth() + 1).toString().padStart(2, '0');
-  let ano = agora.getFullYear();
+  let mes = (agora.getMonth()+1).toString().padStart(2, '0');
 
   document.getElementById('data').textContent =
-    dia + "/" + mes + "/" + ano + " | " + diaSemana;
+    dia + "/" + mes + " | " + diaSemana;
 }
 
 setInterval(atualizarRelogio, 1000);
 atualizarRelogio();
 
-/* áudio */
-function parar() {
-  document.querySelectorAll("audio").forEach(a => {
-    a.pause();
-    a.currentTime = 0;
-  });
+/* registrar service worker */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
 }
-
-function tocar(id) {
-  parar();
-  document.getElementById(id).play();
-}
-
-/* partículas */
-const canvas = document.getElementById("particulas");
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let particulas = [];
-
-function criarParticula() {
-  particulas.push({
-    x: Math.random() * canvas.width,
-    y: canvas.height,
-    size: Math.random() * 4 + 1,
-    speedY: Math.random() * 2 + 1,
-    opacity: Math.random()
-  });
-}
-
-function animar() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  for (let i = 0; i < particulas.length; i++) {
-    let p = particulas[i];
-
-    ctx.fillStyle = "rgba(255,140,0," + p.opacity + ")";
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-    ctx.fill();
-
-    p.y -= p.speedY;
-    p.opacity -= 0.01;
-
-    if (p.opacity <= 0) {
-      particulas.splice(i, 1);
-      i--;
-    }
-  }
-
-  if (particulas.length < 150) {
-    criarParticula();
-  }
-
-  requestAnimationFrame(animar);
-}
-
-animar();
-
-window.addEventListener("resize", () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
 </script>
 
 </body>
