@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Relógio</title>
 
 <style>
@@ -12,17 +13,18 @@ body {
   font-family: Arial, sans-serif;
 }
 
-/* fundo animado */
+/* fundo */
 .fundo {
   position: fixed;
-  width: 110%;
-  height: 110%;
-  top: -5%;
-  left: -5%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 
   background-image: url('fundo.jpg');
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
 
   animation: movimento 20s infinite alternate ease-in-out;
   z-index: -3;
@@ -30,7 +32,7 @@ body {
 
 @keyframes movimento {
   0% { transform: scale(1) translate(0,0); }
-  100% { transform: scale(1.1) translate(-20px,-20px); }
+  100% { transform: scale(1.05) translate(-10px,-10px); }
 }
 
 /* escurece */
@@ -42,7 +44,7 @@ body {
   z-index: -2;
 }
 
-/* canvas partículas */
+/* partículas */
 canvas {
   position: fixed;
   top: 0;
@@ -50,18 +52,21 @@ canvas {
   z-index: -1;
 }
 
-/* conteúdo */
-.container {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+/* CENTRALIZAÇÃO AJUSTÁVEL */
+.centro {
+  position: absolute;
+
+  /* AJUSTE AQUI PARA ALINHAR COM O LOGO */
+  top: 55%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+  text-align: center;
 }
 
-/* relógio */
+/* relógio responsivo */
 #relogio {
-  font-size: 120px;
+  font-size: clamp(40px, 12vw, 120px);
   color: #FFD700;
   letter-spacing: 8px;
 
@@ -73,8 +78,8 @@ canvas {
 
 /* data */
 #data {
-  margin-top: 20px;
-  font-size: 30px;
+  margin-top: 15px;
+  font-size: clamp(14px, 4vw, 30px);
   color: #FFD700;
 }
 </style>
@@ -86,7 +91,7 @@ canvas {
 <div class="overlay"></div>
 <canvas id="particulas"></canvas>
 
-<div class="container">
+<div class="centro">
   <div id="relogio"></div>
   <div id="data"></div>
 </div>
