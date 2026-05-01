@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,17 +12,17 @@ height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-font-family:Arial;
+font-family:Arial, sans-serif;
 color:white;
 text-align:center;
 
-/* FUNDO CORRIGIDO */
 background-image:url("./fundo.jpg");
 background-size:cover;
 background-position:center;
 background-repeat:no-repeat;
 }
 
+/* ESCURECER FUNDO */
 #overlay{
 position:fixed;
 top:0;
@@ -33,6 +33,7 @@ background:rgba(0,0,0,0.6);
 z-index:0;
 }
 
+/* CONTEÚDO */
 #conteudo{
 position:relative;
 z-index:2;
@@ -40,10 +41,13 @@ display:flex;
 flex-direction:column;
 align-items:center;
 gap:15px;
+padding:20px;
 }
 
+/* TEXTOS */
 #titulo{
 font-size:60px;
+text-shadow:2px 2px 10px rgba(0,0,0,0.8);
 }
 
 #igreja{
@@ -53,12 +57,16 @@ opacity:0.9;
 
 #relogio{
 font-size:80px;
+animation:pulse 1s infinite alternate;
+text-shadow:2px 2px 10px rgba(0,0,0,0.8);
 }
 
 #contador{
-font-size:60px;
+font-size:50px;
+text-shadow:2px 2px 10px rgba(0,0,0,0.8);
 }
 
+/* BOTÃO */
 #btn{
 padding:15px 25px;
 font-size:18px;
@@ -67,10 +75,29 @@ border-radius:10px;
 cursor:pointer;
 background:white;
 color:black;
+transition:0.3s;
 }
 
+#btn:hover{
+transform:scale(1.05);
+}
+
+/* VOLUME */
 #volume{
 width:200px;
+}
+
+/* ANIMAÇÃO */
+@keyframes pulse{
+from{transform:scale(1);}
+to{transform:scale(1.05);}
+}
+
+/* RESPONSIVO */
+@media (max-width:600px){
+#titulo{font-size:30px;}
+#relogio{font-size:50px;}
+#contador{font-size:30px;}
 }
 </style>
 </head>
@@ -79,8 +106,9 @@ width:200px;
 
 <div id="overlay"></div>
 
-<audio id="audioFundo" loop>
-<source src="audio.mp3" type="audio/mpeg">
+<!-- ÁUDIO USANDO SEU MP4 -->
+<audio id="audioFundo" loop preload="auto">
+  <source src="Santo.mp4" type="audio/mp4">
 </audio>
 
 <div id="conteudo">
@@ -111,25 +139,28 @@ document.documentElement.requestFullscreen();
 }
 }
 
-/* FADE IN AUDIO */
+/* FADE IN SUAVE */
 function fadeIn(){
 audio.volume = 0;
-audio.play();
+
+audio.play().catch(() => {
+console.log("Autoplay bloqueado pelo navegador");
+});
 
 let v = 0;
 let alvo = volume.value;
 
 let fade = setInterval(function(){
 if(v < alvo){
-v += 0.01;
-audio.volume = v;
+v += 0.005;
+audio.volume = Math.min(v, alvo);
 }else{
 clearInterval(fade);
 }
 },50);
 }
 
-/* BOTÃO INICIAR */
+/* BOTÃO */
 btn.onclick = function(){
 telaCheia();
 fadeIn();
@@ -166,12 +197,12 @@ alvo.setDate(alvo.getDate() + 7);
 return alvo;
 }
 
-const alvo = proximoCulto();
-
 /* CONTAGEM */
 function contagem(){
-const agora = new Date().getTime();
-const distancia = alvo.getTime() - agora;
+const agora = new Date();
+const alvo = proximoCulto();
+
+const distancia = alvo.getTime() - agora.getTime();
 
 if(distancia <= 0){
 document.getElementById("contador").innerText = "Já começou";
@@ -187,6 +218,7 @@ document.getElementById("contador").innerText =
 dias+"d "+horas+"h "+minutos+"m "+segundos+"s";
 }
 
+/* LOOP */
 setInterval(relogio,1000);
 setInterval(contagem,1000);
 
