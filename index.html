@@ -3,44 +3,103 @@
 <head>
 <meta charset="UTF 8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contagem Regressiva Santa Ceia</title>
-</head>
+<title>Painel Igreja</title>
 
-<body style="margin:0; display:flex; justify-content:center; align-items:center; height:100vh; background-color:#0b0b0b; color:white; font-family:Arial,sans-serif;">
-
-<div style="text-align:center">
-<h1>Santa Ceia</h1>
-<h2>Contagem Regressiva</h2>
-
-<div id="contador" style="font-size:40px; margin-top:20px"></div>
-</div>
-
-<script>
-function atualizarContagem() {
-  const agora = new Date().getTime();
-
-  const alvo = new Date();
-  alvo.setDate(alvo.getDate() + ((0 + 7 - alvo.getDay()) % 7));
-  alvo.setHours(19,30,0,0);
-
-  const distancia = alvo.getTime() - agora;
-
-  if (distancia <= 0) {
-    document.getElementById("contador").innerHTML = "Já começou";
-    return;
-  }
-
-  const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
-  const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
-  const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
-
-  document.getElementById("contador").innerHTML =
-    dias + " dias " + horas + " horas " + minutos + " minutos " + segundos + " segundos";
+<style>
+body{
+margin:0;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:#000;
+color:#fff;
+font-family:Arial;
+text-align:center;
 }
 
-setInterval(atualizarContagem, 1000);
-atualizarContagem();
+#titulo{
+font-size:60px;
+margin-bottom:30px;
+}
+
+#relogio{
+font-size:90px;
+margin-bottom:40px;
+}
+
+#contador{
+font-size:70px;
+}
+
+#sub{
+font-size:30px;
+margin-top:20px;
+opacity:0.8;
+}
+</style>
+</head>
+
+<body>
+
+<div id="titulo">Santa Ceia</div>
+
+<div id="relogio">00:00:00</div>
+
+<div id="sub">Contagem regressiva para o culto de domingo 19:30</div>
+
+<div id="contador"></div>
+
+<script>
+function relogio(){
+const agora = new Date();
+const h = String(agora.getHours()).padStart(2,"0");
+const m = String(agora.getMinutes()).padStart(2,"0");
+const s = String(agora.getSeconds()).padStart(2,"0");
+document.getElementById("relogio").innerText = h+":"+m+":"+s;
+}
+
+function proximoCulto(){
+const agora = new Date();
+const alvo = new Date(agora);
+
+const dias = (7 - agora.getDay()) % 7;
+alvo.setDate(agora.getDate() + dias);
+alvo.setHours(19,30,0,0);
+
+if(alvo <= agora){
+alvo.setDate(alvo.getDate() + 7);
+}
+
+return alvo;
+}
+
+const alvo = proximoCulto();
+
+function contagem(){
+const agora = new Date().getTime();
+const distancia = alvo.getTime() + (0 - agora);
+
+if(distancia <= 0){
+document.getElementById("contador").innerText = "Já começou";
+return;
+}
+
+const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
+const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+
+document.getElementById("contador").innerText =
+dias+"d "+horas+"h "+minutos+"m "+segundos+"s";
+}
+
+setInterval(relogio,1000);
+setInterval(contagem,1000);
+
+relogio();
+contagem();
 </script>
 
 </body>
