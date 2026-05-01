@@ -31,11 +31,11 @@ body {
 }
 
 @keyframes movimento {
-  0% { transform: scale(1) translate(0,0); }
-  100% { transform: scale(1.05) translate(-10px,-10px); }
+  0% { transform: scale(1); }
+  100% { transform: scale(1.05); }
 }
 
-/* escurece */
+/* overlay */
 .overlay {
   position: fixed;
   width: 100%;
@@ -52,24 +52,20 @@ canvas {
   z-index: -1;
 }
 
-/* CENTRALIZAÇÃO AJUSTÁVEL */
+/* centro */
 .centro {
   position: absolute;
-
-  /* AJUSTE AQUI PARA ALINHAR COM O LOGO */
   top: 55%;
   left: 50%;
-
   transform: translate(-50%, -50%);
   text-align: center;
 }
 
-/* relógio responsivo */
+/* relógio */
 #relogio {
   font-size: clamp(40px, 12vw, 120px);
   color: #FFD700;
   letter-spacing: 8px;
-
   text-shadow:
     0 0 10px #FFD700,
     0 0 20px #FFA500,
@@ -82,6 +78,21 @@ canvas {
   font-size: clamp(14px, 4vw, 30px);
   color: #FFD700;
 }
+
+/* botões */
+.botoes {
+  margin-top: 20px;
+}
+
+button {
+  margin: 5px;
+  padding: 10px 15px;
+  font-size: 14px;
+  background: #FFD700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
 </style>
 
 </head>
@@ -91,9 +102,21 @@ canvas {
 <div class="overlay"></div>
 <canvas id="particulas"></canvas>
 
+<!-- áudios calmos -->
+<audio id="chuva" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<audio id="ambiente" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
+<audio id="igreja" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"></audio>
+
 <div class="centro">
   <div id="relogio"></div>
   <div id="data"></div>
+
+  <div class="botoes">
+    <button onclick="tocar('chuva')">Chuva Suave</button>
+    <button onclick="tocar('ambiente')">Ambiente Calmo</button>
+    <button onclick="tocar('igreja')">Som Suave</button>
+    <button onclick="parar()">Parar</button>
+  </div>
 </div>
 
 <script>
@@ -120,6 +143,19 @@ function atualizarRelogio() {
 
 setInterval(atualizarRelogio, 1000);
 atualizarRelogio();
+
+/* áudio */
+function parar() {
+  document.querySelectorAll("audio").forEach(a => {
+    a.pause();
+    a.currentTime = 0;
+  });
+}
+
+function tocar(id) {
+  parar();
+  document.getElementById(id).play();
+}
 
 /* partículas */
 const canvas = document.getElementById("particulas");
