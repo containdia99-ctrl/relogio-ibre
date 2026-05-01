@@ -16,17 +16,25 @@ font-family:Arial, sans-serif;
 color:white;
 text-align:center;
 overflow:hidden;
+
+/* 🎬 FUNDO ANIMADO */
+background-image:url("./fundo.jpg");
+background-size:120%;
+background-position:center;
+background-repeat:no-repeat;
+animation: zoomMove 25s infinite alternate ease-in-out;
 }
 
-/* 🎬 VÍDEO DE FUNDO */
-#bgVideo{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-object-fit:cover;
-z-index:-2;
+/* ANIMAÇÃO */
+@keyframes zoomMove{
+0%{
+transform:scale(1);
+background-position:0% 50%;
+}
+100%{
+transform:scale(1.1);
+background-position:100% 50%;
+}
 }
 
 /* ESCURECER FUNDO */
@@ -37,7 +45,7 @@ left:0;
 width:100%;
 height:100%;
 background:rgba(0,0,0,0.6);
-z-index:-1;
+z-index:0;
 }
 
 /* CONTEÚDO */
@@ -84,7 +92,7 @@ margin-top:10px;
 width:200px;
 }
 
-/* ANIMAÇÃO */
+/* ANIMAÇÃO RELÓGIO */
 @keyframes pulse{
 from{transform:scale(1);}
 to{transform:scale(1.05);}
@@ -100,11 +108,6 @@ to{transform:scale(1.05);}
 </head>
 
 <body>
-
-<!-- 🎬 VÍDEO DE FUNDO -->
-<video autoplay muted loop playsinline id="bgVideo">
-  <source src="fundo.mp4" type="video/mp4">
-</video>
 
 <div id="overlay"></div>
 
@@ -123,7 +126,7 @@ to{transform:scale(1.05);}
 
 <div id="contador"></div>
 
-<div id="aviso">Toque na tela para iniciar</div>
+<div id="aviso">Clique na tela para iniciar o som</div>
 
 <input id="volume" type="range" min="0" max="1" step="0.01" value="0.3">
 
@@ -143,7 +146,7 @@ else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
 else if (el.msRequestFullscreen) el.msRequestFullscreen();
 }
 
-/* INICIAR ÁUDIO */
+/* ÁUDIO COM FADE */
 function iniciarAudio(){
 audio.volume = 0;
 
@@ -166,7 +169,7 @@ console.log("Erro ao iniciar áudio");
 });
 }
 
-/* CLIQUE NA TELA */
+/* CLIQUE */
 document.addEventListener("click", function(){
 if(!iniciou){
 iniciou = true;
