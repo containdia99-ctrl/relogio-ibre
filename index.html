@@ -10,22 +10,27 @@ body{
 margin:0;
 height:100vh;
 display:flex;
-flex-direction:column;
 justify-content:center;
 align-items:center;
-background-image:url("fundo.jpg");
+font-family:Arial;
+color:white;
+text-align:center;
+
+/* FUNDO CORRIGIDO */
+background-image:url("./fundo.jpg");
 background-size:cover;
 background-position:center;
-color:white;
-font-family:Arial;
-text-align:center;
+background-repeat:no-repeat;
 }
 
 #overlay{
-position:absolute;
+position:fixed;
+top:0;
+left:0;
 width:100%;
 height:100%;
 background:rgba(0,0,0,0.6);
+z-index:0;
 }
 
 #conteudo{
@@ -34,7 +39,7 @@ z-index:2;
 display:flex;
 flex-direction:column;
 align-items:center;
-gap:20px;
+gap:15px;
 }
 
 #titulo{
@@ -54,15 +59,14 @@ font-size:80px;
 font-size:60px;
 }
 
-#btnIniciar{
-padding:15px 30px;
-font-size:20px;
-cursor:pointer;
+#btn{
+padding:15px 25px;
+font-size:18px;
 border:none;
 border-radius:10px;
-background:#ffffff;
-color:#000;
-margin-top:20px;
+cursor:pointer;
+background:white;
+color:black;
 }
 
 #volume{
@@ -89,7 +93,7 @@ width:200px;
 
 <div id="contador"></div>
 
-<button id="btnIniciar">Iniciar culto</button>
+<button id="btn">Iniciar Culto</button>
 
 <input id="volume" type="range" min="0" max="1" step="0.01" value="0.3">
 
@@ -97,17 +101,27 @@ width:200px;
 
 <script>
 const audio = document.getElementById("audioFundo");
-const btn = document.getElementById("btnIniciar");
+const btn = document.getElementById("btn");
 const volume = document.getElementById("volume");
 
-function fadeInAudio(){
+/* FULLSCREEN */
+function telaCheia(){
+if(document.documentElement.requestFullscreen){
+document.documentElement.requestFullscreen();
+}
+}
+
+/* FADE IN AUDIO */
+function fadeIn(){
 audio.volume = 0;
 audio.play();
 
 let v = 0;
-const fade = setInterval(function(){
-if(v < volume.value){
-v = v + 0.01;
+let alvo = volume.value;
+
+let fade = setInterval(function(){
+if(v < alvo){
+v += 0.01;
 audio.volume = v;
 }else{
 clearInterval(fade);
@@ -115,23 +129,19 @@ clearInterval(fade);
 },50);
 }
 
-function telaCheia(){
-const elem = document.documentElement;
-if(elem.requestFullscreen){
-elem.requestFullscreen();
-}
-}
-
+/* BOTÃO INICIAR */
 btn.onclick = function(){
 telaCheia();
-fadeInAudio();
+fadeIn();
 btn.style.display = "none";
 };
 
+/* VOLUME */
 volume.oninput = function(){
 audio.volume = volume.value;
 };
 
+/* RELÓGIO */
 function relogio(){
 const agora = new Date();
 const h = String(agora.getHours()).padStart(2,"0");
@@ -140,11 +150,12 @@ const s = String(agora.getSeconds()).padStart(2,"0");
 document.getElementById("relogio").innerText = h+":"+m+":"+s;
 }
 
+/* PRÓXIMO DOMINGO 19:30 */
 function proximoCulto(){
 const agora = new Date();
 const alvo = new Date(agora);
 
-const dias = (7 - agora.getDay()) % 7;
+let dias = (7 - agora.getDay()) % 7;
 alvo.setDate(agora.getDate() + dias);
 alvo.setHours(19,30,0,0);
 
@@ -157,6 +168,7 @@ return alvo;
 
 const alvo = proximoCulto();
 
+/* CONTAGEM */
 function contagem(){
 const agora = new Date().getTime();
 const distancia = alvo.getTime() - agora;
@@ -166,10 +178,10 @@ document.getElementById("contador").innerText = "Já começou";
 return;
 }
 
-const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
-const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
-const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+const dias = Math.floor(distancia / (1000*60*60*24));
+const horas = Math.floor((distancia % (1000*60*60*24)) / (1000*60*60));
+const minutos = Math.floor((distancia % (1000*60*60)) / (1000*60));
+const segundos = Math.floor((distancia % (1000*60)) / 1000);
 
 document.getElementById("contador").innerText =
 dias+"d "+horas+"h "+minutos+"m "+segundos+"s";
