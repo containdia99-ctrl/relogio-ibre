@@ -20,7 +20,7 @@ body {
   top: -5%;
   left: -5%;
 
-  background-image: url('https://i.imgur.com/1iTbsaQ.jpeg');
+  background-image: url('fundo.jpg');
   background-size: cover;
   background-position: center;
 
@@ -92,7 +92,6 @@ canvas {
 </div>
 
 <script>
-/* relógio */
 function atualizarRelogio() {
   const agora = new Date();
 
@@ -113,10 +112,11 @@ function atualizarRelogio() {
   document.getElementById('data').textContent =
     dia + "/" + mes + "/" + ano + " | " + diaSemana;
 }
+
 setInterval(atualizarRelogio, 1000);
 atualizarRelogio();
 
-/* partículas fogo */
+/* partículas */
 const canvas = document.getElementById("particulas");
 const ctx = canvas.getContext("2d");
 
@@ -164,7 +164,6 @@ function animar() {
 
 animar();
 
-/* ajustar tela */
 window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
