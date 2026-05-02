@@ -2,17 +2,8 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Painel Igreja</title>
-
-<!-- PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
-
-<!-- iOS suporte -->
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
 <style>
 body{
@@ -27,46 +18,66 @@ text-align:center;
 overflow:hidden;
 touch-action:manipulation;
 
+/* FUNDO */
 background-image:url("./fundo.jpg");
-background-size:120%;
+background-size:cover;
 background-position:center;
-background-repeat:no-repeat;
-animation: zoomMove 25s infinite alternate ease-in-out;
 }
 
-@keyframes zoomMove{
-0%{transform:scale(1); background-position:0% 50%;}
-100%{transform:scale(1.1); background-position:100% 50%;}
-}
-
+/* ESCURECER */
 #overlay{
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.6);
-z-index:0;
+background:rgba(0,0,0,0.7);
 }
 
+/* CAIXA CENTRAL */
 #conteudo{
 position:relative;
 z-index:2;
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:10px;
-padding:15px;
+width:90%;
+max-width:350px;
+background:rgba(0,0,0,0.5);
+padding:20px;
+border-radius:20px;
+backdrop-filter:blur(10px);
 }
 
-#titulo{font-size:28px;}
-#igreja{font-size:16px;}
-#relogio{font-size:48px;}
-#contador{font-size:26px;}
+/* TEXTOS */
+#titulo{
+font-size:24px;
+font-weight:bold;
+}
 
-#aviso{font-size:14px;}
+#igreja{
+font-size:14px;
+margin-bottom:10px;
+}
 
-#volume{width:100%;}
+#relogio{
+font-size:42px;
+font-weight:bold;
+margin:10px 0;
+}
+
+#contador{
+font-size:22px;
+margin-bottom:10px;
+}
+
+#aviso{
+font-size:13px;
+opacity:0.8;
+margin-bottom:10px;
+}
+
+/* VOLUME */
+#volume{
+width:100%;
+}
 </style>
 </head>
 
@@ -79,19 +90,25 @@ padding:15px;
 </audio>
 
 <div id="conteudo">
+
 <div id="titulo">Culto de Santa Ceia</div>
-<div id="igreja">IBRE Juruti</div>
-<div id="relogio"></div>
+<div id="igreja">Igreja Batista da Renovação Espiritual Juruti</div>
+
+<div id="relogio">00:00:00</div>
 <div id="contador"></div>
-<div id="aviso">Toque para iniciar</div>
+
+<div id="aviso">Toque na tela para iniciar</div>
+
 <input id="volume" type="range" min="0" max="1" step="0.01" value="0.3">
+
 </div>
 
 <script>
 const audio = document.getElementById("audioFundo");
 let iniciou = false;
 
-document.addEventListener("click", () => {
+/* INICIAR */
+document.addEventListener("click", function(){
 if(!iniciou){
 iniciou = true;
 audio.volume = 0.3;
@@ -100,19 +117,49 @@ document.getElementById("aviso").style.display = "none";
 }
 });
 
+/* RELÓGIO */
 function relogio(){
 const agora = new Date();
 document.getElementById("relogio").innerText =
 agora.toLocaleTimeString();
 }
 
-setInterval(relogio,1000);
-relogio();
+/* CONTAGEM */
+function proximoCulto(){
+const agora = new Date();
+const alvo = new Date(agora);
 
-/* SERVICE WORKER */
-if('serviceWorker' in navigator){
-navigator.serviceWorker.register('sw.js');
+let dias = (7 - agora.getDay()) % 7;
+alvo.setDate(agora.getDate() + dias);
+alvo.setHours(19,30,0,0);
+
+if(alvo <= agora){
+alvo.setDate(alvo.getDate() + 7);
 }
+
+return alvo;
+}
+
+function contagem(){
+const agora = new Date();
+const alvo = proximoCulto();
+
+const diff = alvo - agora;
+
+const d = Math.floor(diff / (1000*60*60*24));
+const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+const s = Math.floor((diff % (1000*60)) / 1000);
+
+document.getElementById("contador").innerText =
+d+"d "+h+"h "+m+"m "+s+"s";
+}
+
+setInterval(relogio,1000);
+setInterval(contagem,1000);
+
+relogio();
+contagem();
 </script>
 
 </body>
