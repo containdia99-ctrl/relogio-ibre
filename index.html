@@ -2,8 +2,17 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Painel Igreja Mobile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Igreja</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
+
+<!-- iOS suporte -->
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
 <style>
 body{
@@ -18,7 +27,6 @@ text-align:center;
 overflow:hidden;
 touch-action:manipulation;
 
-/* FUNDO ANIMADO */
 background-image:url("./fundo.jpg");
 background-size:120%;
 background-position:center;
@@ -26,13 +34,11 @@ background-repeat:no-repeat;
 animation: zoomMove 25s infinite alternate ease-in-out;
 }
 
-/* ANIMAÇÃO FUNDO */
 @keyframes zoomMove{
 0%{transform:scale(1); background-position:0% 50%;}
 100%{transform:scale(1.1); background-position:100% 50%;}
 }
 
-/* OVERLAY */
 #overlay{
 position:fixed;
 top:0;
@@ -43,58 +49,24 @@ background:rgba(0,0,0,0.6);
 z-index:0;
 }
 
-/* CONTAINER */
 #conteudo{
 position:relative;
 z-index:2;
 display:flex;
 flex-direction:column;
-justify-content:center;
 align-items:center;
 gap:10px;
 padding:15px;
-width:100%;
-max-width:400px;
 }
 
-/* TEXTOS */
-#titulo{
-font-size:28px;
-font-weight:bold;
-text-shadow:2px 2px 8px rgba(0,0,0,0.8);
-}
+#titulo{font-size:28px;}
+#igreja{font-size:16px;}
+#relogio{font-size:48px;}
+#contador{font-size:26px;}
 
-#igreja{
-font-size:16px;
-opacity:0.9;
-}
+#aviso{font-size:14px;}
 
-#relogio{
-font-size:48px;
-font-weight:bold;
-animation:pulse 1s infinite alternate;
-}
-
-#contador{
-font-size:26px;
-}
-
-#aviso{
-font-size:14px;
-opacity:0.8;
-margin-top:5px;
-}
-
-/* VOLUME */
-#volume{
-width:100%;
-}
-
-/* ANIMAÇÃO RELÓGIO */
-@keyframes pulse{
-from{transform:scale(1);}
-to{transform:scale(1.05);}
-}
+#volume{width:100%;}
 </style>
 </head>
 
@@ -102,117 +74,45 @@ to{transform:scale(1.05);}
 
 <div id="overlay"></div>
 
-<!-- ÁUDIO -->
 <audio id="audioFundo" loop preload="auto">
   <source src="Santo.mp3" type="audio/mpeg">
 </audio>
 
 <div id="conteudo">
-
 <div id="titulo">Culto de Santa Ceia</div>
-
 <div id="igreja">IBRE Juruti</div>
-
-<div id="relogio">00:00:00</div>
-
+<div id="relogio"></div>
 <div id="contador"></div>
-
-<div id="aviso">Toque na tela para iniciar</div>
-
+<div id="aviso">Toque para iniciar</div>
 <input id="volume" type="range" min="0" max="1" step="0.01" value="0.3">
-
 </div>
 
 <script>
 const audio = document.getElementById("audioFundo");
-const volume = document.getElementById("volume");
 let iniciou = false;
 
-/* INICIAR ÁUDIO */
-function iniciarAudio(){
-audio.volume = 0;
-
-audio.play().then(() => {
-let v = 0;
-let alvo = volume.value;
-
-let fade = setInterval(function(){
-if(v < alvo){
-v += 0.01;
-audio.volume = Math.min(v, alvo);
-}else{
-clearInterval(fade);
-}
-},50);
-}).catch(()=>{});
-}
-
-/* TOQUE NA TELA */
-document.addEventListener("click", function(){
+document.addEventListener("click", () => {
 if(!iniciou){
 iniciou = true;
-iniciarAudio();
+audio.volume = 0.3;
+audio.play();
 document.getElementById("aviso").style.display = "none";
 }
 });
 
-/* VOLUME */
-volume.oninput = function(){
-audio.volume = volume.value;
-};
-
-/* RELÓGIO */
 function relogio(){
 const agora = new Date();
-const h = String(agora.getHours()).padStart(2,"0");
-const m = String(agora.getMinutes()).padStart(2,"0");
-const s = String(agora.getSeconds()).padStart(2,"0");
-document.getElementById("relogio").innerText = h+":"+m+":"+s;
+document.getElementById("relogio").innerText =
+agora.toLocaleTimeString();
 }
 
-/* PRÓXIMO DOMINGO */
-function proximoCulto(){
-const agora = new Date();
-const alvo = new Date(agora);
-
-let dias = (7 - agora.getDay()) % 7;
-alvo.setDate(agora.getDate() + dias);
-alvo.setHours(19,30,0,0);
-
-if(alvo <= agora){
-alvo.setDate(alvo.getDate() + 7);
-}
-
-return alvo;
-}
-
-/* CONTAGEM */
-function contagem(){
-const agora = new Date();
-const alvo = proximoCulto();
-
-const distancia = alvo.getTime() - agora.getTime();
-
-if(distancia <= 0){
-document.getElementById("contador").innerText = "Já começou";
-return;
-}
-
-const dias = Math.floor(distancia / (1000*60*60*24));
-const horas = Math.floor((distancia % (1000*60*60*24)) / (1000*60*60));
-const minutos = Math.floor((distancia % (1000*60*60)) / (1000*60));
-const segundos = Math.floor((distancia % (1000*60)) / 1000);
-
-document.getElementById("contador").innerText =
-dias+"d "+horas+"h "+minutos+"m "+segundos+"s";
-}
-
-/* LOOP */
 setInterval(relogio,1000);
-setInterval(contagem,1000);
-
 relogio();
-contagem();
+
+/* SERVICE WORKER */
+if('serviceWorker' in navigator){
+navigator.serviceWorker.register('sw.js');
+}
 </script>
 
 </body>
