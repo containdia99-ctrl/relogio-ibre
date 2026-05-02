@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel Igreja PRO</title>
+<title>Painel Igreja</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -14,14 +14,14 @@ font-family:'Segoe UI', sans-serif;
 color:white;
 overflow:hidden;
 
-/* FUNDO CINEMÁTICO */
+/* FUNDO */
 background-image:url("./fundo.png");
 background-size:110%;
 background-position:center;
 animation: zoomBg 30s infinite alternate ease-in-out;
 }
 
-/* ANIMAÇÃO FUNDO */
+/* FUNDO ANIMADO */
 @keyframes zoomBg{
 0%{transform:scale(1);}
 100%{transform:scale(1.08);}
@@ -40,7 +40,7 @@ rgba(0,0,0,0.9)
 );
 }
 
-/* CONTAINER */
+/* CONTEÚDO */
 #conteudo{
 position:absolute;
 width:100%;
@@ -54,53 +54,40 @@ padding:20px;
 z-index:2;
 }
 
-/* TITULO */
+/* TEXTOS */
 #titulo{
 font-size:34px;
 font-weight:600;
-letter-spacing:1px;
-animation:fadeDown 1.5s ease;
 }
 
-/* IGREJA */
 #igreja{
 font-size:16px;
 opacity:0.85;
-margin-top:5px;
 margin-bottom:25px;
-animation:fadeDown 2s ease;
 }
 
-/* RELÓGIO */
 #relogio{
 font-size:80px;
 font-weight:bold;
-letter-spacing:3px;
-text-shadow:0 0 20px rgba(255,255,255,0.3);
-animation:pulse 1s infinite alternate;
+letter-spacing:2px;
 }
 
-/* CONTADOR */
 #contador{
 font-size:30px;
 color:#FFD700;
-margin-top:15px;
-margin-bottom:25px;
-animation:fadeUp 2s ease;
+margin:15px 0;
 }
 
-/* VERSÍCULO */
 #versiculo{
 font-size:18px;
 font-style:italic;
 max-width:90%;
 line-height:1.6;
+margin:20px 0;
 opacity:0;
 transition:opacity 1s;
-margin-bottom:30px;
 }
 
-/* AVISO */
 #aviso{
 font-size:14px;
 opacity:0.6;
@@ -111,27 +98,6 @@ margin-bottom:10px;
 #volume{
 width:70%;
 max-width:300px;
-appearance:none;
-height:6px;
-border-radius:5px;
-background:linear-gradient(90deg,#ff00cc,#3333ff);
-outline:none;
-}
-
-/* ANIMAÇÕES */
-@keyframes fadeDown{
-from{opacity:0; transform:translateY(-20px);}
-to{opacity:1; transform:translateY(0);}
-}
-
-@keyframes fadeUp{
-from{opacity:0; transform:translateY(20px);}
-to{opacity:1; transform:translateY(0);}
-}
-
-@keyframes pulse{
-from{transform:scale(1);}
-to{transform:scale(1.05);}
 }
 </style>
 </head>
@@ -140,8 +106,9 @@ to{transform:scale(1.05);}
 
 <div id="overlay"></div>
 
+<!-- 🔊 ÁUDIO CORRIGIDO -->
 <audio id="audioFundo" loop preload="auto">
-<source src="Santo.mp3" type="audio/mpeg">
+  <source src="santo.mp3" type="audio/mpeg">
 </audio>
 
 <div id="conteudo">
@@ -168,31 +135,35 @@ Juruti - PA
 <script>
 const audio = document.getElementById("audioFundo");
 const volume = document.getElementById("volume");
+
 let iniciou = false;
 
-/* INICIAR ÁUDIO */
+/* 🔊 INICIAR COM TOQUE */
 document.addEventListener("click", function(){
 if(!iniciou){
 iniciou = true;
+
 audio.volume = volume.value;
-audio.play();
+
+audio.play().catch(()=>{});
+
 document.getElementById("aviso").style.display = "none";
 }
 });
 
-/* VOLUME */
+/* 🔊 VOLUME */
 volume.oninput = function(){
 audio.volume = volume.value;
 };
 
-/* RELÓGIO */
+/* ⏰ RELÓGIO */
 function relogio(){
 const agora = new Date();
 document.getElementById("relogio").innerText =
 agora.toLocaleTimeString();
 }
 
-/* CONTAGEM */
+/* ⏳ PRÓXIMO CULTO */
 function proximoCulto(){
 const agora = new Date();
 const alvo = new Date(agora);
@@ -208,6 +179,7 @@ alvo.setDate(alvo.getDate() + 7);
 return alvo;
 }
 
+/* ⏳ CONTAGEM */
 function contagem(){
 const agora = new Date();
 const alvo = proximoCulto();
@@ -228,7 +200,7 @@ document.getElementById("contador").innerText =
 `Faltam ${d}d ${h}h ${m}m ${s}s`;
 }
 
-/* VERSÍCULOS COM FADE */
+/* ✝️ VERSÍCULOS COM FADE */
 const versiculos = [
 "\"O Senhor é o meu pastor; nada me faltará.\" - Salmos 23:1",
 "\"Tudo posso naquele que me fortalece.\" - Filipenses 4:13",
