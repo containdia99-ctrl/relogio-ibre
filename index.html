@@ -18,7 +18,7 @@ font-family:-apple-system, sans-serif;
 overflow:hidden;
 }
 
-/* FUNDO */
+/* 🎬 FUNDO CINEMÁTICO */
 body::before{
 content:"";
 position:absolute;
@@ -29,19 +29,20 @@ filter:blur(40px) brightness(0.5);
 z-index:-1;
 }
 
-/* CENA */
+/* 📱 CENA */
 #scene{
 perspective:1400px;
 animation:fadeIn 1.5s ease;
 }
 
-/* 📱 IPHONE EM MM (REAL) */
+/* 📱 IPHONE RESPONSIVO */
 #iphone{
-width:73.6mm;
-height:158.9mm;
+width:95vw;
+max-width:500px;
+aspect-ratio:9/19.5;
 
-border-radius:18mm;
-padding:3mm;
+border-radius:6vw;
+padding:2vw;
 
 background:linear-gradient(145deg,#111,#000);
 
@@ -55,41 +56,42 @@ animation:rotatePhone 6s infinite alternate ease-in-out;
 position:relative;
 }
 
-/* ANIMAÇÃO */
+/* 🔄 ROTAÇÃO */
 @keyframes rotatePhone{
 0%{transform:rotateY(-6deg) rotateX(2deg);}
 100%{transform:rotateY(6deg) rotateX(-2deg);}
 }
 
+/* ✨ ENTRADA */
 @keyframes fadeIn{
 from{opacity:0; transform:scale(0.9);}
 to{opacity:1; transform:scale(1);}
 }
 
-/* NOTCH */
+/* 🔳 NOTCH */
 #notch{
 position:absolute;
-top:3mm;
+top:2vw;
 left:50%;
 transform:translateX(-50%);
-width:30mm;
-height:6mm;
+width:35%;
+height:4%;
 background:#000;
-border-radius:10mm;
+border-radius:20px;
 z-index:5;
 }
 
-/* TELA */
+/* 📺 TELA */
 #screen{
 width:100%;
 height:100%;
-border-radius:15mm;
+border-radius:5vw;
 overflow:hidden;
 position:relative;
 background:black;
 }
 
-/* REFLEXO */
+/* ✨ REFLEXO */
 #glass{
 position:absolute;
 width:100%;
@@ -103,7 +105,7 @@ transparent 60%
 pointer-events:none;
 }
 
-/* FUNDO APP */
+/* 🎨 FUNDO */
 #bg{
 position:absolute;
 width:100%;
@@ -124,7 +126,7 @@ height:100%;
 background:rgba(0,0,0,0.6);
 }
 
-/* CONTEÚDO */
+/* 📦 CONTEÚDO */
 #conteudo{
 position:absolute;
 width:100%;
@@ -135,49 +137,49 @@ justify-content:center;
 align-items:center;
 text-align:center;
 color:white;
-padding:10px;
+padding:5vw;
 }
 
-/* TEXTOS EM MM */
-#titulo{font-size:5mm;font-weight:600;}
-#igreja{font-size:3mm;}
-#endereco{font-size:2.8mm;opacity:0.8;margin-bottom:3mm;}
+/* 🔥 TEXTOS RESPONSIVOS */
+#titulo{font-size:5vw;font-weight:600;}
+#igreja{font-size:3.5vw;}
+#endereco{font-size:3vw;opacity:0.8;margin-bottom:3vw;}
 
 #relogio{
-font-size:10mm;
+font-size:12vw;
 font-weight:bold;
 }
 
 #contador{
-font-size:4mm;
+font-size:4.5vw;
 color:#FFD700;
-margin:2mm 0;
+margin:2vw 0;
 }
 
 #versiculo{
-font-size:3mm;
+font-size:3.5vw;
 font-style:italic;
-margin:2mm;
+margin:2vw;
 opacity:0;
 transition:0.5s;
 }
 
-/* VOLUME */
+/* 🔊 VOLUME */
 #volume{
 width:80%;
-margin-top:3mm;
+margin-top:3vw;
 }
 
-/* BARRA */
+/* ⬇️ BARRA */
 #homebar{
 position:absolute;
-bottom:3mm;
+bottom:2%;
 left:50%;
 transform:translateX(-50%);
-width:35mm;
-height:1.5mm;
+width:30%;
+height:1%;
 background:white;
-border-radius:10mm;
+border-radius:10px;
 opacity:0.7;
 }
 </style>
@@ -238,13 +240,13 @@ audio.play().catch(()=>{});
 
 volume.oninput=()=>audio.volume=volume.value;
 
-/* RELÓGIO */
+/* ⏰ RELÓGIO */
 function relogio(){
 document.getElementById("relogio").innerText=
 new Date().toLocaleTimeString();
 }
 
-/* CONTAGEM */
+/* ⏳ CONTAGEM */
 function proximoCulto(){
 const agora=new Date();
 const alvo=new Date(agora);
@@ -268,7 +270,7 @@ document.getElementById("contador").innerText=
 `Faltam ${d}d ${h}h ${m}m ${s}s`;
 }
 
-/* VERSÍCULOS */
+/* ✝️ VERSÍCULOS */
 const versiculos=[
 "\"O Senhor é o meu pastor\" - Salmos 23:1",
 "\"Tudo posso naquele que me fortalece\" - Filipenses 4:13",
@@ -276,6 +278,7 @@ const versiculos=[
 ];
 
 let i=0;
+
 function trocar(){
 const el=document.getElementById("versiculo");
 el.style.opacity=0;
@@ -287,6 +290,7 @@ i=(i+1)%versiculos.length;
 },300);
 }
 
+/* LOOP */
 setInterval(relogio,1000);
 setInterval(contagem,1000);
 setInterval(trocar,8000);
