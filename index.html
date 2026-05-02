@@ -17,12 +17,13 @@ color:white;
 text-align:center;
 overflow:hidden;
 
-background-image:url("./fundo.jpg");
+/* FUNDO */
+background-image:url("./fundo.png");
 background-size:cover;
 background-position:center;
 }
 
-/* OVERLAY */
+/* ESCURECER */
 #overlay{
 position:fixed;
 top:0;
@@ -32,7 +33,7 @@ height:100%;
 background:rgba(0,0,0,0.7);
 }
 
-/* CARD */
+/* CARD CENTRAL */
 #conteudo{
 position:relative;
 z-index:2;
@@ -66,6 +67,7 @@ margin:10px 0;
 #contador{
 font-size:20px;
 margin-bottom:15px;
+color:#ffd700;
 }
 
 #versiculo{
@@ -121,17 +123,23 @@ Juruti - PA
 
 <script>
 const audio = document.getElementById("audioFundo");
+const volume = document.getElementById("volume");
 let iniciou = false;
 
 /* INICIAR ÁUDIO */
 document.addEventListener("click", function(){
 if(!iniciou){
 iniciou = true;
-audio.volume = 0.3;
+audio.volume = volume.value;
 audio.play();
 document.getElementById("aviso").style.display = "none";
 }
 });
+
+/* VOLUME */
+volume.oninput = function(){
+audio.volume = volume.value;
+};
 
 /* RELÓGIO */
 function relogio(){
@@ -140,7 +148,7 @@ document.getElementById("relogio").innerText =
 agora.toLocaleTimeString();
 }
 
-/* CONTAGEM */
+/* PRÓXIMO CULTO */
 function proximoCulto(){
 const agora = new Date();
 const alvo = new Date(agora);
@@ -156,11 +164,17 @@ alvo.setDate(alvo.getDate() + 7);
 return alvo;
 }
 
+/* CONTAGEM */
 function contagem(){
 const agora = new Date();
 const alvo = proximoCulto();
 
 const diff = alvo - agora;
+
+if(diff <= 0){
+document.getElementById("contador").innerText = "O culto começou!";
+return;
+}
 
 const d = Math.floor(diff / (1000*60*60*24));
 const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
@@ -175,24 +189,22 @@ document.getElementById("contador").innerText =
 const versiculos = [
 "\"O Senhor é o meu pastor; nada me faltará.\" - Salmos 23:1",
 "\"Tudo posso naquele que me fortalece.\" - Filipenses 4:13",
-"\"Deem graças ao Senhor, porque ele é bom.\" - Salmos 107:1",
 "\"Aquietai-vos e sabei que eu sou Deus.\" - Salmos 46:10",
 "\"Entrega o teu caminho ao Senhor.\" - Salmos 37:5",
-"\"O choro pode durar uma noite, mas a alegria vem pela manhã.\" - Salmos 30:5",
 "\"Buscai ao Senhor enquanto se pode achar.\" - Isaías 55:6"
 ];
 
-let indice = 0;
+let i = 0;
 
 function trocarVersiculo(){
-document.getElementById("versiculo").innerText = versiculos[indice];
-indice = (indice + 1) % versiculos.length;
+document.getElementById("versiculo").innerText = versiculos[i];
+i = (i + 1) % versiculos.length;
 }
 
 /* LOOP */
 setInterval(relogio,1000);
 setInterval(contagem,1000);
-setInterval(trocarVersiculo,10000); // troca a cada 10s
+setInterval(trocarVersiculo,10000);
 
 relogio();
 contagem();
