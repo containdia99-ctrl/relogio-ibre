@@ -13,10 +13,22 @@ height:100vh;
 font-family:'Segoe UI', sans-serif;
 color:white;
 overflow:hidden;
+}
+
+/* 🔥 FUNDO CORRIGIDO */
+#bg{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
 
 background-image:url("./fundo.png");
-background-size:110%;
+background-size:cover;
 background-position:center;
+background-repeat:no-repeat;
+
+z-index:-2;
 animation: zoomBg 30s infinite alternate ease-in-out;
 }
 
@@ -25,13 +37,16 @@ animation: zoomBg 30s infinite alternate ease-in-out;
 100%{transform:scale(1.08);}
 }
 
+/* OVERLAY */
 #overlay{
 position:fixed;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.75);
+background:rgba(0,0,0,0.7);
+z-index:-1;
 }
 
+/* CONTEÚDO */
 #conteudo{
 position:absolute;
 width:100%;
@@ -42,10 +57,9 @@ justify-content:center;
 align-items:center;
 text-align:center;
 padding:10px;
-z-index:2;
 }
 
-/* 🔥 TEXTOS RESPONSIVOS */
+/* 🔥 TEXTOS GRANDES RESPONSIVOS */
 #titulo{
 font-size:6vw;
 font-weight:700;
@@ -65,7 +79,6 @@ opacity:0.8;
 #relogio{
 font-size:14vw;
 font-weight:bold;
-letter-spacing:2px;
 }
 
 #contador{
@@ -92,18 +105,23 @@ margin-bottom:10px;
 
 #volume{
 width:80%;
+max-width:300px;
 }
 </style>
 </head>
 
 <body>
 
+<!-- FUNDO -->
+<div id="bg"></div>
 <div id="overlay"></div>
 
+<!-- ÁUDIO -->
 <audio id="audioFundo" loop preload="auto">
   <source src="santo.mp3" type="audio/mpeg">
 </audio>
 
+<!-- CONTEÚDO -->
 <div id="conteudo">
 
 <div id="titulo">Santa Ceia do Senhor</div>
@@ -134,6 +152,7 @@ const volume = document.getElementById("volume");
 
 let iniciou = false;
 
+/* 🔊 INICIAR ÁUDIO */
 document.addEventListener("click", function(){
 if(!iniciou){
 iniciou = true;
@@ -143,16 +162,19 @@ document.getElementById("aviso").style.display = "none";
 }
 });
 
+/* VOLUME */
 volume.oninput = function(){
 audio.volume = volume.value;
 };
 
+/* RELÓGIO */
 function relogio(){
 const agora = new Date();
 document.getElementById("relogio").innerText =
 agora.toLocaleTimeString();
 }
 
+/* CONTAGEM */
 function proximoCulto(){
 const agora = new Date();
 const alvo = new Date(agora);
@@ -188,10 +210,12 @@ document.getElementById("contador").innerText =
 `Faltam ${d}d ${h}h ${m}m ${s}s`;
 }
 
+/* ✝️ VERSÍCULOS */
 const versiculos = [
 "\"O Senhor é o meu pastor; nada me faltará.\" - Salmos 23:1",
 "\"Tudo posso naquele que me fortalece.\" - Filipenses 4:13",
-"\"Aquietai-vos e sabei que eu sou Deus.\" - Salmos 46:10"
+"\"Aquietai-vos e sabei que eu sou Deus.\" - Salmos 46:10",
+"\"Entrega o teu caminho ao Senhor.\" - Salmos 37:5"
 ];
 
 let i = 0;
@@ -207,6 +231,7 @@ i = (i + 1) % versiculos.length;
 },500);
 }
 
+/* LOOP */
 setInterval(relogio,1000);
 setInterval(contagem,1000);
 setInterval(trocarVersiculo,10000);
