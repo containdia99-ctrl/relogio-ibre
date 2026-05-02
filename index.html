@@ -19,24 +19,87 @@ overflow:hidden;
 color:white;
 }
 
-/* 🎬 FUNDO CINEMÁTICO */
+/* 🎬 FUNDO */
+body::before{
+content:"";
+position:absolute;
+width:120%;
+height:120%;
+background:url("./fundo.png") center/cover no-repeat;
+filter:blur(40px) brightness(0.4);
+z-index:-1;
+}
+
+/* 📱 CENA */
+#scene{
+perspective:1400px;
+}
+
+/* 📱 IPHONE */
+#iphone{
+width:95vw;
+max-width:420px;
+aspect-ratio:9/19.5;
+
+border-radius:50px;
+padding:12px;
+
+background:linear-gradient(145deg,#111,#000);
+
+box-shadow:
+0 40px 120px rgba(0,0,0,0.9),
+inset 0 0 10px rgba(255,255,255,0.05);
+
+transform-style:preserve-3d;
+animation:rotatePhone 6s infinite alternate ease-in-out;
+}
+
+/* ANIMAÇÃO */
+@keyframes rotatePhone{
+0%{transform:rotateY(-5deg) rotateX(2deg);}
+100%{transform:rotateY(5deg) rotateX(-2deg);}
+}
+
+/* NOTCH */
+#notch{
+position:absolute;
+top:10px;
+left:50%;
+transform:translateX(-50%);
+width:120px;
+height:25px;
+background:#000;
+border-radius:20px;
+z-index:5;
+}
+
+/* TELA */
+#screen{
+width:100%;
+height:100%;
+border-radius:40px;
+overflow:hidden;
+position:relative;
+background:black;
+}
+
+/* FUNDO INTERNO */
 #bg{
-position:fixed;
+position:absolute;
 width:100%;
 height:100%;
 background:url("./fundo.png") center/cover no-repeat;
-filter:brightness(0.4) saturate(1.2);
-animation:zoom 40s infinite alternate ease-in-out;
+filter:brightness(0.4);
+animation:zoom 30s infinite alternate;
 }
 
 @keyframes zoom{
 0%{transform:scale(1);}
-100%{transform:scale(1.1);}
+100%{transform:scale(1.08);}
 }
 
 /* VINHETA */
-#bg::after{
-content:"";
+#overlay{
 position:absolute;
 width:100%;
 height:100%;
@@ -45,7 +108,7 @@ background:radial-gradient(circle, transparent 40%, rgba(0,0,0,0.85));
 
 /* CONTEÚDO */
 #conteudo{
-position:relative;
+position:absolute;
 width:100%;
 height:100%;
 display:flex;
@@ -54,27 +117,14 @@ justify-content:center;
 align-items:center;
 text-align:center;
 padding:20px;
-gap:20px;
+gap:15px;
 }
 
-/* TÍTULOS */
-#titulo{
-font-size:6vw;
-font-weight:600;
-letter-spacing:1px;
-}
+/* TEXTOS */
+#titulo{font-size:22px;font-weight:600;}
+#igreja{font-size:14px;opacity:0.8;}
+#endereco{font-size:12px;opacity:0.6;}
 
-#igreja{
-font-size:3.5vw;
-opacity:0.8;
-}
-
-#endereco{
-font-size:3vw;
-opacity:0.6;
-}
-
-/* LINHA */
 .linha{
 width:40%;
 height:2px;
@@ -82,41 +132,55 @@ background:linear-gradient(to right, transparent, white, transparent);
 opacity:0.3;
 }
 
-/* RELÓGIO */
 #relogio{
-font-size:18vw;
-font-weight:700;
-letter-spacing:2px;
-text-shadow:0 0 20px rgba(255,255,255,0.2);
+font-size:48px;
+font-weight:bold;
 }
 
-/* CONTADOR */
 #contador{
-font-size:4.5vw;
+font-size:16px;
 color:#FFD700;
 }
 
-/* VERSÍCULO */
 #versiculo{
-max-width:90%;
-font-size:3.8vw;
-line-height:1.5;
+font-size:13px;
 font-style:italic;
-opacity:0.85;
-transition:opacity 1s;
+opacity:0.9;
+}
+
+/* HOME BAR */
+#homebar{
+position:absolute;
+bottom:10px;
+left:50%;
+transform:translateX(-50%);
+width:120px;
+height:5px;
+background:white;
+border-radius:10px;
+opacity:0.7;
 }
 
 /* VOLUME */
 #volume{
-width:60%;
-opacity:0.5;
+width:80%;
+opacity:0.6;
 }
 </style>
 </head>
 
 <body>
 
+<div id="scene">
+
+<div id="iphone">
+
+<div id="notch"></div>
+
+<div id="screen">
+
 <div id="bg"></div>
+<div id="overlay"></div>
 
 <audio id="audioFundo" loop>
 <source src="santo.mp3" type="audio/mpeg">
@@ -131,7 +195,6 @@ opacity:0.5;
 <div class="linha"></div>
 
 <div id="relogio">00:00</div>
-
 <div id="contador"></div>
 
 <div class="linha"></div>
@@ -139,6 +202,13 @@ opacity:0.5;
 <div id="versiculo"></div>
 
 <input id="volume" type="range" min="0" max="1" step="0.01" value="0.3">
+
+</div>
+
+<div id="homebar"></div>
+
+</div>
+</div>
 
 </div>
 
@@ -206,7 +276,6 @@ i=(i+1)%versiculos.length;
 },500);
 }
 
-/* LOOP */
 setInterval(relogio,1000);
 setInterval(contagem,1000);
 setInterval(trocar,10000);
