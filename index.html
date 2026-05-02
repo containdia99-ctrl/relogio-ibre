@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel Igreja</title>
 
 <style>
@@ -12,19 +12,17 @@ height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-font-family:Arial, sans-serif;
+font-family:'Segoe UI', Arial, sans-serif;
 color:white;
 text-align:center;
 overflow:hidden;
-touch-action:manipulation;
 
-/* FUNDO */
 background-image:url("./fundo.jpg");
 background-size:cover;
 background-position:center;
 }
 
-/* ESCURECER */
+/* OVERLAY */
 #overlay{
 position:fixed;
 top:0;
@@ -34,43 +32,54 @@ height:100%;
 background:rgba(0,0,0,0.7);
 }
 
-/* CAIXA CENTRAL */
+/* CARD */
 #conteudo{
 position:relative;
 z-index:2;
 width:90%;
 max-width:350px;
-background:rgba(0,0,0,0.5);
-padding:20px;
+background:rgba(0,0,0,0.55);
+padding:25px;
 border-radius:20px;
-backdrop-filter:blur(10px);
+backdrop-filter:blur(12px);
+box-shadow:0 0 30px rgba(0,0,0,0.5);
 }
 
 /* TEXTOS */
 #titulo{
 font-size:24px;
-font-weight:bold;
+font-weight:600;
 }
 
 #igreja{
 font-size:14px;
-margin-bottom:10px;
+opacity:0.85;
+margin-bottom:15px;
 }
 
 #relogio{
-font-size:42px;
+font-size:44px;
 font-weight:bold;
 margin:10px 0;
 }
 
 #contador{
-font-size:22px;
-margin-bottom:10px;
+font-size:20px;
+margin-bottom:15px;
 }
 
+#versiculo{
+font-size:14px;
+font-style:italic;
+margin:15px 0;
+opacity:0.9;
+line-height:1.4;
+}
+
+/* AVISO */
 #aviso{
 font-size:13px;
-opacity:0.8;
+opacity:0.7;
 margin-bottom:10px;
 }
 
@@ -91,13 +100,20 @@ width:100%;
 
 <div id="conteudo">
 
-<div id="titulo">Culto de Santa Ceia</div>
-<div id="igreja">Igreja Batista da Renovação Espiritual Juruti</div>
+<div id="titulo">Santa Ceia do Senhor</div>
+
+<div id="igreja">
+Igreja Batista da Renovação Espiritual<br>
+Juruti - PA
+</div>
 
 <div id="relogio">00:00:00</div>
+
 <div id="contador"></div>
 
-<div id="aviso">Toque na tela para iniciar</div>
+<div id="versiculo"></div>
+
+<div id="aviso">Toque na tela para iniciar o louvor</div>
 
 <input id="volume" type="range" min="0" max="1" step="0.01" value="0.3">
 
@@ -107,7 +123,7 @@ width:100%;
 const audio = document.getElementById("audioFundo");
 let iniciou = false;
 
-/* INICIAR */
+/* INICIAR ÁUDIO */
 document.addEventListener("click", function(){
 if(!iniciou){
 iniciou = true;
@@ -152,14 +168,35 @@ const m = Math.floor((diff % (1000*60*60)) / (1000*60));
 const s = Math.floor((diff % (1000*60)) / 1000);
 
 document.getElementById("contador").innerText =
-d+"d "+h+"h "+m+"m "+s+"s";
+`Faltam ${d}d ${h}h ${m}m ${s}s`;
 }
 
+/* ✝️ VERSÍCULOS */
+const versiculos = [
+"\"O Senhor é o meu pastor; nada me faltará.\" - Salmos 23:1",
+"\"Tudo posso naquele que me fortalece.\" - Filipenses 4:13",
+"\"Deem graças ao Senhor, porque ele é bom.\" - Salmos 107:1",
+"\"Aquietai-vos e sabei que eu sou Deus.\" - Salmos 46:10",
+"\"Entrega o teu caminho ao Senhor.\" - Salmos 37:5",
+"\"O choro pode durar uma noite, mas a alegria vem pela manhã.\" - Salmos 30:5",
+"\"Buscai ao Senhor enquanto se pode achar.\" - Isaías 55:6"
+];
+
+let indice = 0;
+
+function trocarVersiculo(){
+document.getElementById("versiculo").innerText = versiculos[indice];
+indice = (indice + 1) % versiculos.length;
+}
+
+/* LOOP */
 setInterval(relogio,1000);
 setInterval(contagem,1000);
+setInterval(trocarVersiculo,10000); // troca a cada 10s
 
 relogio();
 contagem();
+trocarVersiculo();
 </script>
 
 </body>
