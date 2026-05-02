@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mockup Apple</title>
+<title>iPhone Real Size</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -13,12 +13,11 @@ height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background:radial-gradient(circle at center,#111,#000);
+background:radial-gradient(circle,#111,#000);
 font-family:-apple-system, sans-serif;
-overflow:hidden;
 }
 
-/* 🎬 FUNDO CINEMÁTICO */
+/* FUNDO CINEMÁTICO */
 body::before{
 content:"";
 position:absolute;
@@ -29,25 +28,19 @@ filter:blur(40px) brightness(0.5);
 z-index:-1;
 }
 
-/* 📱 CENA */
-#scene{
-perspective:1400px;
-animation:fadeIn 1.5s ease;
-}
-
-/* 📱 IPHONE GRANDE */
+/* 📱 IPHONE TAMANHO REAL */
 #iphone{
-width:min(92vw, 500px);
-aspect-ratio:9/19.5;
+width:73.6mm;
+height:158.9mm;
 
-border-radius:65px;
-padding:14px;
+border-radius:18mm;
+padding:3mm;
 
 background:linear-gradient(145deg,#111,#000);
 
 box-shadow:
-0 60px 180px rgba(0,0,0,0.95),
-inset 0 0 15px rgba(255,255,255,0.05);
+0 25px 70px rgba(0,0,0,0.9),
+inset 0 0 5px rgba(255,255,255,0.05);
 
 transform-style:preserve-3d;
 animation:rotatePhone 6s infinite alternate ease-in-out;
@@ -55,62 +48,55 @@ animation:rotatePhone 6s infinite alternate ease-in-out;
 position:relative;
 }
 
-/* 🔄 ROTAÇÃO SUAVE */
+/* ANIMAÇÃO */
 @keyframes rotatePhone{
-0%{transform:rotateY(-6deg) rotateX(2deg);}
-100%{transform:rotateY(6deg) rotateX(-2deg);}
+0%{transform:rotateY(-5deg) rotateX(2deg);}
+100%{transform:rotateY(5deg) rotateX(-2deg);}
 }
 
-/* ✨ ENTRADA */
-@keyframes fadeIn{
-from{opacity:0; transform:scale(0.9);}
-to{opacity:1; transform:scale(1);}
-}
-
-/* 🔳 NOTCH */
+/* NOTCH */
 #notch{
 position:absolute;
-top:10px;
+top:3mm;
 left:50%;
 transform:translateX(-50%);
-width:160px;
-height:30px;
+width:30mm;
+height:6mm;
 background:#000;
-border-radius:20px;
+border-radius:10mm;
 z-index:5;
 }
 
-/* 📺 TELA */
+/* TELA */
 #screen{
 width:100%;
 height:100%;
-border-radius:55px;
+border-radius:15mm;
 overflow:hidden;
 position:relative;
 background:black;
 }
 
-/* ✨ REFLEXO */
+/* REFLEXO */
 #glass{
 position:absolute;
 width:100%;
 height:100%;
 background:linear-gradient(
 120deg,
-rgba(255,255,255,0.2) 0%,
-rgba(255,255,255,0.05) 30%,
-transparent 60%
+rgba(255,255,255,0.2),
+transparent
 );
 pointer-events:none;
 }
 
-/* 🎨 FUNDO DO APP */
+/* FUNDO APP */
 #bg{
 position:absolute;
 width:100%;
 height:100%;
 background:url("./fundo.png") center/cover no-repeat;
-animation:zoom 30s infinite alternate ease-in-out;
+animation:zoom 30s infinite alternate;
 }
 
 @keyframes zoom{
@@ -125,7 +111,7 @@ height:100%;
 background:rgba(0,0,0,0.6);
 }
 
-/* 📦 CONTEÚDO */
+/* CONTEÚDO */
 #conteudo{
 position:absolute;
 width:100%;
@@ -136,56 +122,55 @@ justify-content:center;
 align-items:center;
 text-align:center;
 color:white;
-padding:20px;
+padding:10px;
 }
 
-/* 🔥 TEXTOS */
-#titulo{font-size:22px;font-weight:600;}
-#igreja{font-size:14px;}
-#endereco{font-size:13px;opacity:0.8;margin-bottom:12px;}
+/* TEXTOS */
+#titulo{font-size:5mm;font-weight:600;}
+#igreja{font-size:3mm;}
+#endereco{font-size:2.8mm;margin-bottom:3mm;opacity:0.8;}
 
 #relogio{
-font-size:50px;
+font-size:10mm;
 font-weight:bold;
 }
 
 #contador{
-font-size:18px;
+font-size:4mm;
 color:#FFD700;
-margin:10px 0;
+margin:2mm 0;
 }
 
 #versiculo{
-font-size:14px;
+font-size:3mm;
 font-style:italic;
-margin:10px;
+margin:2mm;
 opacity:0;
 transition:0.5s;
 }
 
+/* VOLUME */
 #volume{
 width:80%;
-margin-top:10px;
+margin-top:3mm;
 }
 
-/* ⬇️ BARRA IPHONE */
+/* BARRA */
 #homebar{
 position:absolute;
-bottom:10px;
+bottom:3mm;
 left:50%;
 transform:translateX(-50%);
-width:140px;
-height:6px;
+width:35mm;
+height:1.5mm;
 background:white;
-border-radius:10px;
+border-radius:10mm;
 opacity:0.7;
 }
 </style>
 </head>
 
 <body>
-
-<div id="scene">
 
 <div id="iphone">
 
@@ -220,8 +205,6 @@ opacity:0.7;
 </div>
 </div>
 
-</div>
-
 <script>
 const audio=document.getElementById("audioFundo");
 const volume=document.getElementById("volume");
@@ -238,13 +221,13 @@ audio.play().catch(()=>{});
 
 volume.oninput=()=>audio.volume=volume.value;
 
-/* ⏰ RELÓGIO */
+/* RELÓGIO */
 function relogio(){
 document.getElementById("relogio").innerText=
 new Date().toLocaleTimeString();
 }
 
-/* ⏳ CONTAGEM */
+/* CONTAGEM */
 function proximoCulto(){
 const agora=new Date();
 const alvo=new Date(agora);
@@ -268,7 +251,7 @@ document.getElementById("contador").innerText=
 `Faltam ${d}d ${h}h ${m}m ${s}s`;
 }
 
-/* ✝️ VERSÍCULOS */
+/* VERSÍCULOS */
 const versiculos=[
 "\"O Senhor é o meu pastor\" - Salmos 23:1",
 "\"Tudo posso naquele que me fortalece\" - Filipenses 4:13",
