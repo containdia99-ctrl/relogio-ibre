@@ -14,20 +14,17 @@ font-family:'Segoe UI', sans-serif;
 color:white;
 overflow:hidden;
 
-/* FUNDO */
 background-image:url("./fundo.png");
 background-size:110%;
 background-position:center;
 animation: zoomBg 30s infinite alternate ease-in-out;
 }
 
-/* FUNDO ANIMADO */
 @keyframes zoomBg{
 0%{transform:scale(1);}
 100%{transform:scale(1.08);}
 }
 
-/* OVERLAY */
 #overlay{
 position:fixed;
 width:100%;
@@ -40,7 +37,6 @@ rgba(0,0,0,0.9)
 );
 }
 
-/* CONTEÚDO */
 #conteudo{
 position:absolute;
 width:100%;
@@ -54,7 +50,6 @@ padding:20px;
 z-index:2;
 }
 
-/* TEXTOS */
 #titulo{
 font-size:34px;
 font-weight:600;
@@ -63,7 +58,14 @@ font-weight:600;
 #igreja{
 font-size:16px;
 opacity:0.85;
-margin-bottom:25px;
+margin-bottom:10px;
+}
+
+/* 📍 ENDEREÇO */
+#endereco{
+font-size:14px;
+opacity:0.7;
+margin-bottom:20px;
 }
 
 #relogio{
@@ -94,7 +96,6 @@ opacity:0.6;
 margin-bottom:10px;
 }
 
-/* VOLUME */
 #volume{
 width:70%;
 max-width:300px;
@@ -106,7 +107,6 @@ max-width:300px;
 
 <div id="overlay"></div>
 
-<!-- 🔊 ÁUDIO CORRIGIDO -->
 <audio id="audioFundo" loop preload="auto">
   <source src="santo.mp3" type="audio/mpeg">
 </audio>
@@ -118,6 +118,10 @@ max-width:300px;
 <div id="igreja">
 Igreja Batista da Renovação Espiritual<br>
 Juruti - PA
+</div>
+
+<div id="endereco">
+📍 Rua Arnaldo Pinheiro - São Marcos
 </div>
 
 <div id="relogio">00:00:00</div>
@@ -138,32 +142,25 @@ const volume = document.getElementById("volume");
 
 let iniciou = false;
 
-/* 🔊 INICIAR COM TOQUE */
 document.addEventListener("click", function(){
 if(!iniciou){
 iniciou = true;
-
 audio.volume = volume.value;
-
 audio.play().catch(()=>{});
-
 document.getElementById("aviso").style.display = "none";
 }
 });
 
-/* 🔊 VOLUME */
 volume.oninput = function(){
 audio.volume = volume.value;
 };
 
-/* ⏰ RELÓGIO */
 function relogio(){
 const agora = new Date();
 document.getElementById("relogio").innerText =
 agora.toLocaleTimeString();
 }
 
-/* ⏳ PRÓXIMO CULTO */
 function proximoCulto(){
 const agora = new Date();
 const alvo = new Date(agora);
@@ -179,7 +176,6 @@ alvo.setDate(alvo.getDate() + 7);
 return alvo;
 }
 
-/* ⏳ CONTAGEM */
 function contagem(){
 const agora = new Date();
 const alvo = proximoCulto();
@@ -200,13 +196,11 @@ document.getElementById("contador").innerText =
 `Faltam ${d}d ${h}h ${m}m ${s}s`;
 }
 
-/* ✝️ VERSÍCULOS COM FADE */
 const versiculos = [
 "\"O Senhor é o meu pastor; nada me faltará.\" - Salmos 23:1",
 "\"Tudo posso naquele que me fortalece.\" - Filipenses 4:13",
 "\"Aquietai-vos e sabei que eu sou Deus.\" - Salmos 46:10",
-"\"Entrega o teu caminho ao Senhor.\" - Salmos 37:5",
-"\"Buscai ao Senhor enquanto se pode achar.\" - Isaías 55:6"
+"\"Entrega o teu caminho ao Senhor.\" - Salmos 37:5"
 ];
 
 let i = 0;
@@ -222,7 +216,6 @@ i = (i + 1) % versiculos.length;
 },500);
 }
 
-/* LOOP */
 setInterval(relogio,1000);
 setInterval(contagem,1000);
 setInterval(trocarVersiculo,10000);
