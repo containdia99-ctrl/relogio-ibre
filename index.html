@@ -19,7 +19,7 @@ overflow:hidden;
 background:black;
 }
 
-/* 🎬 FUNDO COM MOVIMENTO */
+/* 🎬 FUNDO */
 #bg{
 position:fixed;
 width:100%;
@@ -29,22 +29,51 @@ animation:movimento 40s infinite alternate ease-in-out;
 filter:brightness(0.6);
 }
 
-/* ANIMAÇÃO SUAVE */
 @keyframes movimento{
-0%{
-transform:scale(1) translate(0,0);
-}
-100%{
-transform:scale(1.1) translate(-2%, -2%);
-}
+0%{transform:scale(1) translate(0,0);}
+100%{transform:scale(1.1) translate(-2%, -2%);}
 }
 
-/* OVERLAY ESCURO */
+/* OVERLAY */
 #overlay{
 position:fixed;
 width:100%;
 height:100%;
 background:rgba(0,0,0,0.5);
+}
+
+/* ✨ PARTÍCULAS */
+#particles{
+position:fixed;
+width:100%;
+height:100%;
+pointer-events:none;
+overflow:hidden;
+z-index:1;
+}
+
+.particula{
+position:absolute;
+width:6px;
+height:6px;
+background:white;
+border-radius:50%;
+opacity:0.6;
+filter:blur(1px);
+animation:subir linear infinite;
+}
+
+/* ANIMAÇÃO DAS PARTÍCULAS */
+@keyframes subir{
+0%{
+transform:translateY(100vh) scale(0.5);
+opacity:0;
+}
+10%{opacity:0.6;}
+100%{
+transform:translateY(-10vh) scale(1.2);
+opacity:0;
+}
 }
 
 /* RELÓGIO */
@@ -66,19 +95,39 @@ text-shadow:
 <div id="bg"></div>
 <div id="overlay"></div>
 
+<div id="particles"></div>
+
 <div id="relogio">00:00</div>
 
 <script>
+/* RELÓGIO */
 function atualizar(){
 const agora = new Date();
 const h = String(agora.getHours()).padStart(2,"0");
 const m = String(agora.getMinutes()).padStart(2,"0");
-
 document.getElementById("relogio").innerText = `${h}:${m}`;
 }
-
 setInterval(atualizar,1000);
 atualizar();
+
+/* ✨ GERAR PARTÍCULAS */
+const container = document.getElementById("particles");
+
+function criarParticula(){
+const p = document.createElement("div");
+p.classList.add("particula");
+
+p.style.left = Math.random()*100 + "vw";
+p.style.animationDuration = (5 + Math.random()*10) + "s";
+p.style.width = p.style.height = (3 + Math.random()*6) + "px";
+
+container.appendChild(p);
+
+setTimeout(()=>{p.remove();},15000);
+}
+
+/* LOOP */
+setInterval(criarParticula,300);
 </script>
 
 </body>
