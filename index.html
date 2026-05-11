@@ -1,91 +1,202 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Relógio</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Clock Premium</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
 
 body{
 height:100vh;
+overflow:hidden;
 display:flex;
 justify-content:center;
 align-items:center;
-font-family:-apple-system, "Segoe UI", sans-serif;
-color:white;
-overflow:hidden;
-background:black;
+font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+background:#000;
 }
 
-/* 🎬 FUNDO */
+/* =========================
+🎬 FUNDO CINEMATOGRÁFICO
+========================= */
+
 #bg{
 position:fixed;
-width:100%;
-height:100%;
-background:url("./fundo.png") center/cover no-repeat;
-animation:movimento 40s infinite alternate ease-in-out;
-filter:brightness(0.6);
+inset:0;
+background:
+linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.65)),
+url("./fundo.png") center center / cover no-repeat;
+animation:bgMove 35s ease-in-out infinite alternate;
+transform:scale(1.05);
+filter:
+brightness(.75)
+contrast(1.1)
+saturate(1.15);
 }
 
-@keyframes movimento{
-0%{transform:scale(1) translate(0,0);}
-100%{transform:scale(1.1) translate(-2%, -2%);}
+@keyframes bgMove{
+0%{
+transform:scale(1.05) translate(0px,0px);
+}
+100%{
+transform:scale(1.12) translate(-20px,-15px);
+}
 }
 
-/* OVERLAY */
-#overlay{
+/* =========================
+✨ LUZ AMBIENTE
+========================= */
+
+.light{
 position:fixed;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.5);
+width:800px;
+height:800px;
+border-radius:50%;
+background:radial-gradient(circle,
+rgba(255,255,255,.10) 0%,
+rgba(255,255,255,0) 70%);
+mix-blend-mode:screen;
+filter:blur(80px);
+animation:pulse 8s infinite alternate ease-in-out;
 }
 
-/* ✨ PARTÍCULAS */
+.light.one{
+top:-250px;
+left:-150px;
+}
+
+.light.two{
+bottom:-300px;
+right:-150px;
+animation-delay:4s;
+}
+
+@keyframes pulse{
+0%{
+transform:scale(1);
+opacity:.4;
+}
+100%{
+transform:scale(1.2);
+opacity:.7;
+}
+}
+
+/* =========================
+✨ PARTÍCULAS
+========================= */
+
 #particles{
 position:fixed;
-width:100%;
-height:100%;
-pointer-events:none;
+inset:0;
 overflow:hidden;
-z-index:1;
+pointer-events:none;
 }
 
-.particula{
+.particle{
 position:absolute;
-width:6px;
-height:6px;
-background:white;
 border-radius:50%;
-opacity:0.6;
+background:rgba(255,255,255,.9);
 filter:blur(1px);
-animation:subir linear infinite;
+opacity:0;
+animation:float linear forwards;
 }
 
-/* ANIMAÇÃO DAS PARTÍCULAS */
-@keyframes subir{
+@keyframes float{
 0%{
-transform:translateY(100vh) scale(0.5);
+transform:translateY(100vh) scale(.3);
 opacity:0;
 }
-10%{opacity:0.6;}
+
+10%{
+opacity:.6;
+}
+
 100%{
-transform:translateY(-10vh) scale(1.2);
+transform:translateY(-10vh) scale(1.3);
 opacity:0;
 }
 }
 
-/* RELÓGIO */
-#relogio{
+/* =========================
+🧊 GLASS CONTAINER
+========================= */
+
+.clock-container{
 position:relative;
-z-index:2;
-font-size:22vw;
-font-weight:700;
-letter-spacing:2px;
+z-index:5;
+
+padding:40px 70px;
+
+border-radius:40px;
+
+background:rgba(255,255,255,.08);
+
+backdrop-filter:blur(25px);
+-webkit-backdrop-filter:blur(25px);
+
+border:1px solid rgba(255,255,255,.12);
+
+box-shadow:
+0 10px 40px rgba(0,0,0,.45),
+inset 0 1px 1px rgba(255,255,255,.15),
+inset 0 -1px 1px rgba(255,255,255,.05);
+}
+
+/* =========================
+⏰ RELÓGIO
+========================= */
+
+#clock{
+font-size:14vw;
+font-weight:600;
+letter-spacing:-8px;
+line-height:1;
+
+color:white;
+
 text-shadow:
-0 0 20px rgba(0,0,0,0.8),
-0 0 40px rgba(0,0,0,0.6);
+0 0 30px rgba(255,255,255,.08),
+0 0 80px rgba(255,255,255,.06);
+
+user-select:none;
+
+animation:fadeIn 2s ease;
+}
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* =========================
+📱 RESPONSIVO
+========================= */
+
+@media(max-width:768px){
+
+.clock-container{
+padding:30px 40px;
+border-radius:30px;
+}
+
+#clock{
+font-size:24vw;
+letter-spacing:-4px;
+}
+
 }
 </style>
 </head>
@@ -93,41 +204,70 @@ text-shadow:
 <body>
 
 <div id="bg"></div>
-<div id="overlay"></div>
+
+<div class="light one"></div>
+<div class="light two"></div>
 
 <div id="particles"></div>
 
-<div id="relogio">00:00</div>
+<div class="clock-container">
+<div id="clock">00:00</div>
+</div>
 
 <script>
-/* RELÓGIO */
-function atualizar(){
-const agora = new Date();
-const h = String(agora.getHours()).padStart(2,"0");
-const m = String(agora.getMinutes()).padStart(2,"0");
-document.getElementById("relogio").innerText = `${h}:${m}`;
+
+/* =========================
+⏰ RELÓGIO
+========================= */
+
+function updateClock(){
+
+const now = new Date();
+
+const h = String(now.getHours()).padStart(2,"0");
+const m = String(now.getMinutes()).padStart(2,"0");
+
+document.getElementById("clock").innerText = `${h}:${m}`;
+
 }
-setInterval(atualizar,1000);
-atualizar();
 
-/* ✨ GERAR PARTÍCULAS */
-const container = document.getElementById("particles");
+setInterval(updateClock,1000);
+updateClock();
 
-function criarParticula(){
+/* =========================
+✨ PARTÍCULAS
+========================= */
+
+const particles = document.getElementById("particles");
+
+function createParticle(){
+
 const p = document.createElement("div");
-p.classList.add("particula");
 
-p.style.left = Math.random()*100 + "vw";
-p.style.animationDuration = (5 + Math.random()*10) + "s";
-p.style.width = p.style.height = (3 + Math.random()*6) + "px";
+p.classList.add("particle");
 
-container.appendChild(p);
+const size = Math.random() * 5 + 2;
 
-setTimeout(()=>{p.remove();},15000);
+p.style.width = size + "px";
+p.style.height = size + "px";
+
+p.style.left = Math.random() * 100 + "vw";
+
+p.style.animationDuration =
+(Math.random() * 10 + 8) + "s";
+
+p.style.opacity = Math.random();
+
+particles.appendChild(p);
+
+setTimeout(()=>{
+p.remove();
+},18000);
+
 }
 
-/* LOOP */
-setInterval(criarParticula,300);
+setInterval(createParticle,180);
+
 </script>
 
 </body>
